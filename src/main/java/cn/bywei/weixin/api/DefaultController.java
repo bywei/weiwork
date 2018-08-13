@@ -54,6 +54,14 @@ public class DefaultController {
 		wmsg.setTouser(weiXinConfig.getSendmsgTouser());
     	return defaultService.process(wmsg);
     }
+    
+    @ResponseBody
+    @RequestMapping("/api/notify/sendToText")
+    public BaseResponse<String> sendText(@RequestBody WorkMessage wmsg) {
+    	wmsg.setMsgtype(WorkMsgType.TEXT.getType());
+    	wmsg.setAgentid(weiXinConfig.getAgentid());
+    	return defaultService.process(wmsg);
+    }
 
 	// 企业微信通用开发配置GET请求处理
 	@RequestMapping("/api/notify")
