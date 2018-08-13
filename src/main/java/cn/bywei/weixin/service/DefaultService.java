@@ -41,6 +41,7 @@ public class DefaultService {
 			String data = JsonUtils.toJson(wmsg);
 			String accessToken = getAccessToken();
 			String messageResult = httpsClient.postJson(String.format(SEND_MESSAGE_URL, accessToken), data);
+			logger.info("发送监控信息：" + data);
 			return BaseResponse.success(messageResult);
 		} catch(Exception ex) {
 			logger.error("process()_error",ex);
