@@ -29,7 +29,7 @@ import cn.bywei.weixin.service.DefaultService;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = StartApplication.class)
 @WebAppConfiguration
-public class SecretKeyTest {
+public class DefaultServiceTest {
 	
 	private Logger logger = LoggerFactory.getLogger(this.getClass());
     
@@ -48,7 +48,7 @@ public class SecretKeyTest {
 	
 	@Test
 	public void test_api_getSecretKey_should_success() throws UnsupportedEncodingException, Exception {
-		MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get("/api/secret/getSecretKey");
+		MockHttpServletRequestBuilder mockHttpServletRequestBuilder = MockMvcRequestBuilders.get("/api/msg/sendMsg");
         ResultActions resultActions = mockMvc.perform(mockHttpServletRequestBuilder).andDo(print());
         MvcResult result = resultActions.andExpect(status().isOk()).andReturn();
 		Assert.assertNotNull(result.getResponse().getContentAsString());
