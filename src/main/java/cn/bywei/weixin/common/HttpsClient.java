@@ -34,9 +34,7 @@ import org.apache.http.config.RegistryBuilder;
 import org.apache.http.config.SocketConfig;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.LayeredConnectionSocketFactory;
 import org.apache.http.conn.socket.PlainConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -77,7 +75,7 @@ public class HttpsClient {
 
     static {
         ConnectionSocketFactory csf = PlainConnectionSocketFactory.getSocketFactory();
-        LayeredConnectionSocketFactory lsf = createSSLConnSocketFactory();
+        SSLConnectionSocketFactory lsf = createSSLConnSocketFactory();
         Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
                 .register("http", csf).register("https", lsf).build();
         manager = new PoolingHttpClientConnectionManager(registry);
@@ -126,36 +124,41 @@ public class HttpsClient {
 		}
 		return false;
 	}
+	
+	/**
+	 *证书信任管理器（用于实现https）  实现一个X509TrustManager接口，用于绕过验证，不用修改里面的方法
+	 */
+	public static class MyX509TrustManager implements X509TrustManager{
 
-    private static SSLConnectionSocketFactory createSSLConnSocketFactory() {
-        SSLConnectionSocketFactory sslsf = null;
+	    @Override
+	    public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException { }
+
+	    @Override
+	    public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException { }
+
+	    @Override
+	    public X509Certificate[] getAcceptedIssuers() {
+	        return null;
+	    }
+	}
+
+	private static SSLConnectionSocketFactory createSSLConnSocketFactory() {
         try {
-        	SSLContext context = SSLContext.getInstance(SSLConnectionSocketFactory.TLS);
-        	context.init(null, new TrustManager[] { truseAllManager }, null);
-            sslsf = new SSLConnectionSocketFactory(context, NoopHostnameVerifier.INSTANCE);
+        	SSLContext sc = SSLContext.getInstance("SSLv3");
+     		sc.init(null, new TrustManager[] { new MyX509TrustManager() }, null);
+     		return new SSLConnectionSocketFactory(sc);
         } catch (NoSuchAlgorithmException e) {
             LOGGER.error("SSL create error" + e.getLocalizedMessage());
             e.printStackTrace();
         } catch(KeyManagementException e) {
         	LOGGER.error("SSL create key error" + e.getLocalizedMessage());
         	e.printStackTrace();
+        } catch(Exception ex) {
+        	LOGGER.error("SSL create key Exception" + ex.getLocalizedMessage());
+        	ex.printStackTrace();
         }
-        return sslsf;
+        return null;
     }
-
-    /** 
-     * 重写验证方法，取消检测ssl 
-     */  
-    private static TrustManager truseAllManager = new X509TrustManager(){  
-  
-        public void checkClientTrusted(X509Certificate[] arg0, String arg1) throws CertificateException { }  
-  
-        public void checkServerTrusted(X509Certificate[] arg0, String arg1) throws CertificateException {}  
-  
-        public java.security.cert.X509Certificate[] getAcceptedIssuers() {  
-            return null;  
-        }  
-    };
     
     private String doMethod(HttpRequestBase method) {
         CloseableHttpResponse response = null;

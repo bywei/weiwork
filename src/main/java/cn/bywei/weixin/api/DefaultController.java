@@ -14,7 +14,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import cn.bywei.weixin.api.vo.TextMessage;
 import cn.bywei.weixin.api.vo.WorkMessage;
 import cn.bywei.weixin.common.BaseResponse;
 import cn.bywei.weixin.common.aes.AesException;
@@ -40,10 +42,11 @@ public class DefaultController {
     	return page;
     }
 
+    @ResponseBody
     @RequestMapping("/api/notify/sendText")
     public BaseResponse<String> sendText(@RequestBody String content) {
     	WorkMessage wmsg = new WorkMessage();
-    	wmsg.setContent(content);
+    	wmsg.setText(new TextMessage(content));
     	wmsg.setMsgtype(WorkMsgType.TEXT.getType());
 		wmsg.setAgentid(weiXinConfig.getAgentid());
 		wmsg.setToparty(weiXinConfig.getSendmsgToparty());

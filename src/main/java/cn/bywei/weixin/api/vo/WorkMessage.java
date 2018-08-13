@@ -9,7 +9,7 @@ public class WorkMessage {
 	private String totag;// 否 标签ID列表，多个接收者用‘|’分隔，最多支持100个。当touser为@all时忽略本参数
 	private String msgtype = WorkMsgType.TEXT.getType();// 是 消息类型，此时固定为：text
 	private String agentid;// 是 企业应用的id，整型。可在应用的设置页面查看
-	private String content;// 是 消息内容，最长不超过2048个字节
+	private TextMessage text;// 是 消息内容，最长不超过2048个字节
 	private String safe = "0";// 否 表示是否是保密消息，0表示否，1表示是，默认0
 
 	public String getTouser() {
@@ -52,12 +52,12 @@ public class WorkMessage {
 		this.agentid = agentid;
 	}
 
-	public String getContent() {
-		return content;
+	public TextMessage getText() {
+		return text;
 	}
 
-	public void setContent(String content) {
-		this.content = content;
+	public void setText(TextMessage text) {
+		this.text = text;
 	}
 
 	public String getSafe() {

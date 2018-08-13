@@ -24,6 +24,7 @@ import cn.bywei.weixin.common.util.JsonUtils;
 public class DefaultService {
 	
 	private static final String GET_TOKEN_URL  = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid=%s&corpsecret=%s";
+//	private static final String GET_TOKEN_URL  = "http://work.weixin.qq.com/api/devtools/devhandler.php?tid=1&corpid=%s&corpsecret=%s&f=json";
 	
 	private static final String SEND_MESSAGE_URL  = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token=%s";
 	
@@ -51,7 +52,8 @@ public class DefaultService {
 		try {
 			String accessToken = Constant.getAccessTokenCache();
 			if(accessToken == null) {
-				accessToken = httpsClient.get(String.format(GET_TOKEN_URL, weiXinConfig.getCorpId(),weiXinConfig.getCorpsecret()));
+				String content = httpsClient.get(String.format(GET_TOKEN_URL, weiXinConfig.getCorpId(),weiXinConfig.getCorpsecret()));
+				accessToken = JsonUtils.getValue(content, "access_token");
 				Constant.setAccessTokenCache(accessToken);
 			}
 			return accessToken;
