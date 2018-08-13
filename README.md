@@ -1,5 +1,5 @@
 # weiwork 项目介绍 
-微信企业号管理系统 Java企业微信开发源码框架,获取AccessToken,发送消息
+微信企业号管理系统 Java企业微信开发源码框架,获取AccessToken,发送消息. 当前应用于公司的企业微信监控报警系统.
 ![列表](./screenshot/banner.jpg)
 
 ### 微信企业号管理系统源码框架
