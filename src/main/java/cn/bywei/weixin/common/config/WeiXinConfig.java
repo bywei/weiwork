@@ -30,6 +30,8 @@ public class WeiXinConfig {
 	//发送消息到用户:成员ID列表（消息接收者，多个接收者用‘|’分隔，最多支持1000个）。特殊情况：指定为@all，则向关注该企业应用的全部成员发送
 	@Value("${weixin.sendmsg.touser:''}")
 	private String sendmsgTouser = "";
+	@Value("${weixin.token.expire:60}")
+	private int tokenExpire = 60;
 
 	public String getToken() {
 		return token;
@@ -62,5 +64,8 @@ public class WeiXinConfig {
 	public String getSendmsgTouser() {
 		return sendmsgTouser;
 	}
-	
+
+	public int getTokenExpire() {
+		return tokenExpire;
+	}
 }

@@ -1,5 +1,6 @@
 package cn.bywei.weixin.service;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class DefaultService {
 			String data = JsonUtils.toJson(wmsg);
 			String accessToken = getAccessToken();
 			String messageResult = httpsClient.postJson(String.format(SEND_MESSAGE_URL, accessToken), data);
-			logger.info("发送监控信息：" + data);
+			logger.info("发送监控信息：url={}, req={}, rep={}" ,String.format(SEND_MESSAGE_URL, accessToken), data, messageResult);
 			return BaseResponse.success(messageResult);
 		} catch(Exception ex) {
 			logger.error("process()_error",ex);
@@ -51,10 +52,13 @@ public class DefaultService {
 	
 	public String getAccessToken() {
 		try {
-			String accessToken = Constant.getAccessTokenCache();
+			String accessToken = Constant.getAccessTokenCache(weiXinConfig.getTokenExpire());
 			if(accessToken == null) {
 				String content = httpsClient.get(String.format(GET_TOKEN_URL, weiXinConfig.getCorpId(),weiXinConfig.getCorpsecret()));
 				accessToken = JsonUtils.getValue(content, "access_token");
+				if(StringUtils.isBlank(accessToken)) {
+					logger.error("getAccessToken()_null, content = {}", content);
+				}
 				Constant.setAccessTokenCache(accessToken);
 			}
 			return accessToken;

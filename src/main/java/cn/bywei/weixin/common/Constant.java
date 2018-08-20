@@ -11,9 +11,9 @@ public class Constant {
 
 	private static HashMap<String, LocalTime> accessTokenMap = new HashMap<String, LocalTime>();
 	
-	public static String getAccessTokenCache() {
+	public static String getAccessTokenCache(int expire) {
 		LocalTime time = accessTokenMap.get(ACCESS_TOKEN_NAME);
-		if(ACCESS_TOKEN == null || time == null|| LocalTime.now().isAfter(time.plusMinutes(115))) {
+		if(ACCESS_TOKEN == null || time == null|| LocalTime.now().isAfter(time.plusMinutes(expire))) {
 			return null;
 		}
 		return ACCESS_TOKEN;
